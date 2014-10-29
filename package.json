@@ -1,0 +1,20 @@
+{
+  "name": "unit-testing-twitter-bot",
+  "version": "0.0.1",
+  "description": "A demonstration of using Nock and Mocha together with Chai.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha -R spec"
+  },
+  "author": "dear student<you@ncsu.edu>",
+  "license": "ISC",
+  "devDependencies": {
+    "async": "^0.9.0",
+    "chai": "^1.9.2",
+    "mocha": "^1.20.1",
+    "nock": "^0.34.1",
+    "orchestrate": "^0.1.2",
+    "twitter": "^0.2.12",
+    "underscore": "^1.6.0"
+  }
+}
