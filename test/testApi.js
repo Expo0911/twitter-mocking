@@ -74,7 +74,7 @@ describe('twitterClient', function(){
 	});
 });
 
-
+/*
 describe('twitterClient', function(){
   describe('#updateStatus(text)', function(){
    	it('should return updated status', function(done){
@@ -83,24 +83,75 @@ describe('twitterClient', function(){
       //*****************add moking*****************************************
       var mockService = nock("https://api.twitter.com")
          .post("/1.1/statuses/update.json")
-      //*****************code changes end***********************************
          .reply(200, {"text": data.newStatus});
 
    		twitterClient.updateStatus(data.newStatus, function(results)
    		{
    			expect(results).to.have.property("text");
    			expect(results.text).to.equal(data.newStatus);
+        expect(results.text.length).to.be.below(400);
         console.log("\t Testing updateStatus(text):");
         console.log("\t Print results.text:\t" + results.text);
         console.log("\t Print data.newStatus:\t" + data.newStatus);
 
 				done();
    		});
+      //*****************code changes end***********************************
     });
 	});
 });
+*/
+describe('twitterClient', function(){
+  describe('#updateStatus(text)', function(){
+    it('should return updated status', function(done){
+      var longMessage = "test for 140 character limit when updating status test for 140 character limit when updating status test for 140 character limit when updating status test for 140 character limit when updating status";
+      // POST text to "https://api.twitter.com/1.1/statuses/update.json"
+      var mockService = nock("https://api.twitter.com")
+         .post("/1.1/statuses/update.json", {"status":longMessage, "include_entities":1})
+         .reply(413, {"error":"Message is too long"});
+    
+      twitterClient.updateStatus(longMessage, function(results)
+      {
+        var data = JSON.parse( results.data );
+        /*
+        //Test part ***************************  
+        console.log("Testing updateStatus : ");
+        console.log("1.results"); 
+          console.log(results);
+        console.log("2.JSON.stringify(results)");
+          console.log(JSON.stringify(results));
+        console.log("3.results.data");
+          console.log(results.data);    
+        console.log("4.data");  
+          console.log(data);
+        console.log("5.data.error");
+          console.log(data.error);
+        console.log("6.results.data.error");
+          console.log(results.data.error);
+        //Test part ends***********************
+        */
+        //Verify the statusCode property
+        expect(results).to.have.property("statusCode");
+        //Verify the statusCode is 413
+        expect(results.statusCode).to.be.equal(413);
+        // Verify the data property
+        expect(results).to.have.property("data");
+        // Verify the data.error property
+        expect(JSON.parse(results.data)).to.have.property("error");
+        expect(data).to.have.property("error");  
+        expect(results.data).to.be.equal(JSON.stringify(data));
+        //Verify the error message is equal to "Message is too long"
+        expect(data.error).to.be.equal("Message is too long");
+
+        done();
+      });
+    });
+  });
+});
 
 
+
+//Add a new test case that passes a new status which exceeds the 140 character limit for updateStatus.
 // test for 140 character limit when updating status
 //******************************************************
 describe('twitterClient', function(){
