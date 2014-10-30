@@ -151,6 +151,7 @@ describe('twitterClient', function(){
 
 
 
+
 //Add a new test case that passes a new status which exceeds the 140 character limit for updateStatus.
 // test for 140 character limit when updating status
 //******************************************************
