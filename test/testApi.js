@@ -54,27 +54,31 @@ describe('twitterClient', function(){
       var mockService = nock("https://api.twitter.com")
          .get("/1.1/search/tweets.json?q=" + querystring.escape(data.query))
          //*****************code changes************************************
-         .reply(200, {statuses:[ {"id": "test id abcde", "text": "print this test id"}]});    
+         .reply(200, {statuses:[ {"id": "test id 01", "text": "print id 01"},{"id": "test id 02", "text": "print id 02"}]});    
          // form a new Array data structure with id and text
          //*****************code changes end********************************
    		twitterClient.search(data.query, function(results)
    		{
         //*****************code changes*************************************
+        console.log("Print results (Array data structure with id and text):");
+        console.log(results);
    			expect(results).to.have.property("statuses");
    			expect(results.statuses.length).to.be.above(0);
    			// more assertions
         // each status should have an id property and text property
-				expect(results.statuses[0]).to.have.property("id");
-        expect(results.statuses[0]).to.have.property("text");
+        for (i = 0; i < results.statuses.length; i++){
+				  expect(results.statuses[i]).to.have.property("id");
+          expect(results.statuses[i]).to.have.property("text");
+        }
         //*****************code changes end*********************************
-				done();
+				  done();
    		});
 
     });
 	});
 });
 
-/*
+
 describe('twitterClient', function(){
   describe('#updateStatus(text)', function(){
    	it('should return updated status', function(done){
@@ -100,7 +104,8 @@ describe('twitterClient', function(){
     });
 	});
 });
-*/
+
+
 describe('twitterClient', function(){
   describe('#updateStatus(text)', function(){
     it('should return updated status', function(done){
@@ -113,7 +118,7 @@ describe('twitterClient', function(){
       twitterClient.updateStatus(longMessage, function(results)
       {
         var data = JSON.parse( results.data );
-        /*
+        
         //Test part ***************************  
         console.log("Testing updateStatus : ");
         console.log("1.results"); 
@@ -129,17 +134,17 @@ describe('twitterClient', function(){
         console.log("6.results.data.error");
           console.log(results.data.error);
         //Test part ends***********************
-        */
+        
         //Verify the statusCode property
         expect(results).to.have.property("statusCode");
         //Verify the statusCode is 413
         expect(results.statusCode).to.be.equal(413);
         // Verify the data property
         expect(results).to.have.property("data");
-        // Verify the data.error property
-        expect(JSON.parse(results.data)).to.have.property("error");
+        // Verify the data.error property       
         expect(data).to.have.property("error");  
-        expect(results.data).to.be.equal(JSON.stringify(data));
+        expect(JSON.parse(results.data)).to.have.property("error");
+          //expect(results.data).to.be.equal(JSON.stringify(data));
         //Verify the error message is equal to "Message is too long"
         expect(data.error).to.be.equal("Message is too long");
 
